@@ -1,14 +1,21 @@
-import React, { useState } from "react";
-import { useDispatch } from 'react-redux'
+import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
+import { useAppDispatch } from '../../app/hooks';
 
 import { postAdded } from "./postsSlice";
+
+interface IPostItem {
+  id: string
+  title: string
+  content: string
+}
+
 
 export const AddPostForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onTitleChanged = (e: { target: { value: any; }; }) => setTitle(e.target.value);
   const onContentChanged = (e: { target: { value: any; }; }) => setContent(e.target.value);
@@ -22,7 +29,6 @@ export const AddPostForm = () => {
           content
         })
       );
-
       setTitle("");
       setContent("");
     }
