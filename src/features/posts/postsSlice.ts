@@ -1,23 +1,22 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice, nanoid } from "@reduxjs/toolkit";
 
 // Define a type for the slice state
-// interface IPostItem {
-//   id: string
-//   title: string
-//   content: string
-// }
+interface IPostItem {
+  user: string;
+  date: any;
+  id: string
+  title: string
+  content: string
+}
 
-// interface IPostItems extends Array<IPostItem>{}
+interface IPostItems extends Array<IPostItem>{}
 
-// const initialState: IPostItems = [
+const initialState: IPostItems = [];
+
+// const initialState = [
 //   { id: "1", title: "First Post!", content: "Hello!" },
-//   { id: "2", title: "Second Post", content: "More text" }
+//   { id: "2", title: "Second Post", content: "More text" },
 // ];
-
-const initialState = [
-  { id: "1", title: "First Post!", content: "Hello!" },
-  { id: "2", title: "Second Post", content: "More text" },
-];
 
 export const postsSlice = createSlice({
   // Remember: reducer functions must always create new state values immutably, by making copies!
@@ -28,8 +27,21 @@ export const postsSlice = createSlice({
   name: "posts",
   initialState: initialState,
   reducers : {
-    postAdded(state, action){
-      state.push(action.payload)
+    postAdded: {
+      reducer(state, action: PayloadAction<IPostItem>) {
+        state.push(action.payload)
+      },
+      prepare(post) {
+        return {
+          payload: {
+            id: nanoid(),
+            date: new Date().toISOString(),
+            title: post.title,
+            content: post.content,
+            user: post.userId
+          }
+        }
+      }
     },
     postUpdated(state, action) {
       const { id, title, content } = action.payload
