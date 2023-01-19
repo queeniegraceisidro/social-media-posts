@@ -1,13 +1,11 @@
 import { useParams, Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
+import { selectPostById } from "./postsSlice";
 
 export const SinglePostPage = () => {
-   const params = useParams();
-   const postId = params.postId;
-
-  const post = useAppSelector((state) =>
-    state.posts.find((post) => post.id === postId)
-  );
+  const params = useParams();
+  const postId = params.postId;
+  const post = useAppSelector(state => selectPostById(state, postId!))
 
   if (!post) {
     return (

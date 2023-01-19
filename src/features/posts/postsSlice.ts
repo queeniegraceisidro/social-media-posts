@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice, nanoid } from "@reduxjs/toolkit";
-import { sub } from 'date-fns'
+import { IUsers } from "../users/usersSlice";
 
 // Define a type for the slice state
 interface IPostItem {
@@ -13,21 +13,31 @@ interface IPostItem {
 
 interface IPostItems extends Array<IPostItem> { }
 
-const initialState: IPostItems = [
-  {
-    id: "1", user: "1", date: sub(new Date(), { minutes: 10 }).toISOString(),
-    title: "First Post!", content: "Hello!", reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 }
-  },
-  {
-    id: "2", user: "2", date: sub(new Date(), { minutes: 5 }).toISOString(),
-    title: "Second Post", content: "More text", reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 }
-  },
-];
 
-// const initialState = [
-//   { id: "1", title: "First Post!", content: "Hello!" },
-//   { id: "2", title: "Second Post", content: "More text" },
+interface IPostInitialState {
+  posts: IPostItems
+  status: string
+  error: any
+}
+
+
+const initialState: IPostInitialState = {
+  posts: [],
+  status: 'idle',
+  error: null
+}
+
+// const initialState: IPostItems = [
+//   {
+//     id: "1", user: "1", date: sub(new Date(), { minutes: 10 }).toISOString(),
+//     title: "First Post!", content: "Hello!", reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 }
+//   },
+//   {
+//     id: "2", user: "2", date: sub(new Date(), { minutes: 5 }).toISOString(),
+//     title: "Second Post", content: "More text", reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 }
+//   },
 // ];
+
 
 export const postsSlice = createSlice({
   // Remember: reducer functions must always create new state values immutably, by making copies!
@@ -40,7 +50,7 @@ export const postsSlice = createSlice({
   reducers: {
     postAdded: {
       reducer(state, action: PayloadAction<IPostItem>) {
-        state.push(action.payload)
+        state.posts.push(action.payload)
       },
       prepare(post) {
         return {
@@ -57,7 +67,7 @@ export const postsSlice = createSlice({
     },
     postUpdated(state, action) {
       const { id, title, content } = action.payload
-      const existingPost = state.find(post => post.id === id)
+      const existingPost = state.posts.find(post => post.id === id)
       if (existingPost) {
         existingPost.title = title
         existingPost.content = content
@@ -65,7 +75,7 @@ export const postsSlice = createSlice({
     },
     reactionAdded(state, action) {
       const { postId, reaction } = action.payload
-      const existingPost = state.find(post => post.id === postId)
+      const existingPost = state.posts.find(post => post.id === postId)
       if (existingPost) {
         existingPost.reactions[reaction]++
       }
@@ -74,3 +84,8 @@ export const postsSlice = createSlice({
 });
 export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;
 export default postsSlice.reducer;
+
+export const selectAllPosts = (state: { posts: IPostInitialState }) => state.posts.posts
+
+export const selectPostById = (state: { posts: IPostInitialState; users: IUsers }, postId: string) =>
+  state.posts.posts.find(post => post.id === postId)

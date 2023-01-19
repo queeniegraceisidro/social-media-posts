@@ -2,8 +2,7 @@ import React from "react";
 import {
   BrowserRouter,
   Routes,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 
 import './App.css';
@@ -60,6 +59,5 @@ const EditPost = () => {
     </div>
   );
 }
-
 
 export default App;
