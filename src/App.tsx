@@ -20,14 +20,14 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/posts/:postId" element={<SinglePostPage />} />
-        <Route path="/editPost/:postId" element={<EditPostForm />} />
+        <Route path="/posts/:postId" element={<ViewPost/>} />
+        <Route path="/editPost/:postId" element={<EditPost/>} />
       </Routes>
     </BrowserRouter>
   );
 }
 
-function Home() {
+const Home = () => {
   return (
     <div>
       <Navbar />
@@ -38,5 +38,28 @@ function Home() {
     </div>
   );
 }
+
+const ViewPost = () => {
+  return (
+    <div>
+      <Navbar />
+      <React.Fragment>
+      <SinglePostPage />
+      </React.Fragment>
+    </div>
+  );
+}
+
+const EditPost = () => {
+  return (
+    <div>
+      <Navbar />
+      <React.Fragment>
+      <EditPostForm />
+      </React.Fragment>
+    </div>
+  );
+}
+
 
 export default App;
