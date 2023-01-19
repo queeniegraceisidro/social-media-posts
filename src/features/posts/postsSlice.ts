@@ -1,8 +1,10 @@
-import { PayloadAction, createSlice, nanoid } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice, nanoid, createAsyncThunk } from "@reduxjs/toolkit";
 import { IUsers } from "../users/usersSlice";
+import { client } from '../../api/client'
+
 
 // Define a type for the slice state
-interface IPostItem {
+export interface IPostItem {
   user: string
   date: any
   id: string
@@ -37,6 +39,12 @@ const initialState: IPostInitialState = {
 //     title: "Second Post", content: "More text", reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 }
 //   },
 // ];
+
+
+export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
+  const response = await client.get('/fakeApi/posts')
+  return response.data
+})
 
 
 export const postsSlice = createSlice({
@@ -80,6 +88,21 @@ export const postsSlice = createSlice({
         existingPost.reactions[reaction]++
       }
     }
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(fetchPosts.pending, (state, action) => {
+        state.status = 'loading'
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        // Add any fetched posts to the array
+        state.posts = state.posts.concat(action.payload)
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+      })
   }
 });
 export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;
