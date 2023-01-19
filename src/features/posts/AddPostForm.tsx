@@ -1,14 +1,8 @@
 import { SetStateAction, useState } from "react";
-import { nanoid } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 import { postAdded } from "./postsSlice";
 
-interface IPostItem {
-  id: string
-  title: string
-  content: string
-}
 
 export const AddPostForm = () => {
   const [title, setTitle] = useState("");
@@ -28,7 +22,6 @@ export const AddPostForm = () => {
     if (title && content) {
       dispatch(
         postAdded({
-          id: nanoid(),
           title,
           content,
           userId
